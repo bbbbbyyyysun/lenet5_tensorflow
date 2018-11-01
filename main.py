@@ -21,35 +21,21 @@ def test():
 	x = graph.get_tensor_by_name('x:0')
 	logits = graph.get_tensor_by_name('logits:0')
 	pred = tf.argmax(logits, 1)
+ 
+	s = input('Input image filename (press q to quit):')
+	if s == 'q':
+		return 
 
-	img = get_img()
-
-	if img == 'quit': 
-		return
-
-	img = cv2.resize(img, (32,32))
-	img = extractValue(img)
-	img = np.array(img)
-	img = img[np.newaxis,:,:,np.newaxis]
+	img = cv2.imread(s)
+	test = cv2.resize(img, (32,32))
+	test = extractValue(test)
+	test = np.array(test)
+	test = test[np.newaxis,:,:,np.newaxis]
 	
-	result = sess.run(pred, feed_dict={x:img})[0]
+	result = sess.run(pred, feed_dict={x:test})[0]
 	print('The prediction is {}'.format(result))
 	cv2.imshow('img', img)
 	cv2.waitKey(0)
-
-def get_img():
-	while True:
-		s = input('Input image filename (press q to quit):')
-		if s == 'q':
-			return 'quit'
-
-		try:
-			img = cv2.imread(s)
-			return img
-		except:
-			print('Incorrect filename! Try again!')
-			continue
-	return
 
 def extractValue(imgOriginal):
     height, width, numChannels = imgOriginal.shape
@@ -75,3 +61,6 @@ if __name__ == '__main__':
 		test()
 	else:
 		print('Invalid flage info!')
+
+
+
